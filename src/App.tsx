@@ -30,12 +30,29 @@ function App() {
             <a href="#faq" className="nav-link">FAQ</a>
           </nav>
           
-          <a href="#demo" className="btn btn-primary">Request Demo</a>
+          <a href="#demo" className="btn btn-primary header-desktop-btn">Request Demo</a>
           
-          <button className="mobile-menu-btn" onClick={() => setMobileMenuOpen(!mobileMenuOpen)}>
-            {mobileMenuOpen ? <X /> : <Menu />}
+          <button 
+            className="mobile-menu-btn" 
+            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+            aria-label="Toggle navigation menu"
+          >
+            {mobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
           </button>
         </div>
+
+        {/* Mobile Navigation Drawer */}
+        {mobileMenuOpen && (
+          <div className="mobile-menu-drawer">
+            <a href="#home" className="mobile-nav-link" onClick={() => setMobileMenuOpen(false)}>Home</a>
+            <a href="#restaurants" className="mobile-nav-link" onClick={() => setMobileMenuOpen(false)}>For Restaurants</a>
+            <a href="#customers" className="mobile-nav-link" onClick={() => setMobileMenuOpen(false)}>For Customers</a>
+            <a href="#how-it-works" className="mobile-nav-link" onClick={() => setMobileMenuOpen(false)}>How It Works</a>
+            <a href="#features" className="mobile-nav-link" onClick={() => setMobileMenuOpen(false)}>Features</a>
+            <a href="#faq" className="mobile-nav-link" onClick={() => setMobileMenuOpen(false)}>FAQ</a>
+            <a href="#demo" className="btn btn-primary" style={{ width: '100%', marginTop: '0.75rem', minHeight: '48px' }} onClick={() => setMobileMenuOpen(false)}>Request Demo</a>
+          </div>
+        )}
       </header>
 
       {/* 2. HERO SECTION WITH COMPOSITE PRODUCT VISUAL */}
