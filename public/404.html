@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Redirecting | RestroConnect</title>
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+    <script>
+      // Single Page Application redirect script for GitHub Pages
+      (function() {
+        var path = window.location.pathname;
+        if (path.indexOf('/privacy-policy') !== -1) {
+          window.location.replace('/privacy-policy/');
+        } else if (path.indexOf('/terms-of-service') !== -1) {
+          window.location.replace('/terms-of-service/');
+        } else if (path.indexOf('/data-deletion') !== -1) {
+          window.location.replace('/data-deletion/');
+        } else {
+          window.location.replace('/');
+        }
+      })();
+    </script>
+    <style>
+      body {
+        font-family: 'Inter', -apple-system, sans-serif;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 100vh;
+        margin: 0;
+        background: #0F172A;
+        color: white;
+        text-align: center;
+      }
+      a {
+        color: #6366F1;
+        text-decoration: underline;
+      }
+    </style>
+  </head>
+  <body>
+    <div>
+      <h2>RestroConnect</h2>
+      <p>Redirecting to requested page...</p>
+      <p><a href="/">Click here if not redirected automatically</a></p>
+    </div>
+  </body>
+</html>

@@ -1,59 +1,99 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { supabase } from './lib/supabase';
 import { 
-  Menu, X, CheckCircle2, ShoppingCart, MessageCircle, 
+  CheckCircle2, ShoppingCart, MessageCircle, 
   Store, ClipboardList, PieChart, Users, Gift, Tag, Building2, 
   ArrowRight, ChevronDown, Check, Receipt,
   Utensils, Sparkles
 } from 'lucide-react';
 import './index.css';
+import { Header } from './components/Header';
+import { Footer } from './components/Footer';
+import { PrivacyPolicy } from './pages/PrivacyPolicy';
+import { TermsOfService } from './pages/TermsOfService';
+import { DataDeletion } from './pages/DataDeletion';
+
+const getPathFromLocation = (): string => {
+  if (typeof window === 'undefined') return '/';
+  const path = window.location.pathname.replace(/\/+$/, '') || '/';
+  if (['/privacy-policy', '/terms-of-service', '/data-deletion'].includes(path)) {
+    return path;
+  }
+  const hash = window.location.hash;
+  if (hash === '#privacy-policy' || hash === '#/privacy-policy') return '/privacy-policy';
+  if (hash === '#terms-of-service' || hash === '#/terms-of-service') return '/terms-of-service';
+  if (hash === '#data-deletion' || hash === '#/data-deletion') return '/data-deletion';
+  return '/';
+};
 
 function App() {
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  
+  const [currentPath, setCurrentPath] = useState(getPathFromLocation());
+
+  useEffect(() => {
+    const handleLocationChange = () => {
+      setCurrentPath(getPathFromLocation());
+    };
+    window.addEventListener('popstate', handleLocationChange);
+    window.addEventListener('hashchange', handleLocationChange);
+    return () => {
+      window.removeEventListener('popstate', handleLocationChange);
+      window.removeEventListener('hashchange', handleLocationChange);
+    };
+  }, []);
+
+  useEffect(() => {
+    if (currentPath === '/privacy-policy') {
+      document.title = 'Privacy Policy | RestroConnect';
+    } else if (currentPath === '/terms-of-service') {
+      document.title = 'Terms of Service | RestroConnect';
+    } else if (currentPath === '/data-deletion') {
+      document.title = 'Data Deletion Instructions | RestroConnect';
+    } else {
+      document.title = 'RestroConnect | Restaurant Management & WhatsApp Ordering';
+    }
+  }, [currentPath]);
+
+  const navigate = (to: string) => {
+    const cleanTo = to.startsWith('/') && !to.startsWith('/#') ? to.replace(/\/+$/, '') || '/' : to;
+    window.history.pushState({}, '', cleanTo);
+    setCurrentPath(cleanTo);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  if (currentPath === '/privacy-policy') {
+    return (
+      <div className="app-container">
+        <Header currentPath={currentPath} onNavigate={navigate} />
+        <PrivacyPolicy onNavigate={navigate} />
+        <Footer currentPath={currentPath} onNavigate={navigate} />
+      </div>
+    );
+  }
+
+  if (currentPath === '/terms-of-service') {
+    return (
+      <div className="app-container">
+        <Header currentPath={currentPath} onNavigate={navigate} />
+        <TermsOfService onNavigate={navigate} />
+        <Footer currentPath={currentPath} onNavigate={navigate} />
+      </div>
+    );
+  }
+
+  if (currentPath === '/data-deletion') {
+    return (
+      <div className="app-container">
+        <Header currentPath={currentPath} onNavigate={navigate} />
+        <DataDeletion onNavigate={navigate} />
+        <Footer currentPath={currentPath} onNavigate={navigate} />
+      </div>
+    );
+  }
+
   return (
     <div className="app-container">
       {/* 1. HEADER */}
-      <header className="header">
-        <div className="container header-container">
-          <div className="logo">
-            <Store style={{ color: 'var(--purple)' }} />
-            <span>Restro<span>Connect</span></span>
-          </div>
-          
-          <nav className="nav-links">
-            <a href="#home" className="nav-link">Home</a>
-            <a href="#restaurants" className="nav-link">For Restaurants</a>
-            <a href="#customers" className="nav-link">For Customers</a>
-            <a href="#how-it-works" className="nav-link">How It Works</a>
-            <a href="#features" className="nav-link">Features</a>
-            <a href="#faq" className="nav-link">FAQ</a>
-          </nav>
-          
-          <a href="#demo" className="btn btn-primary header-desktop-btn">Request Demo</a>
-          
-          <button 
-            className="mobile-menu-btn" 
-            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            aria-label="Toggle navigation menu"
-          >
-            {mobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
-          </button>
-        </div>
-
-        {/* Mobile Navigation Drawer */}
-        {mobileMenuOpen && (
-          <div className="mobile-menu-drawer">
-            <a href="#home" className="mobile-nav-link" onClick={() => setMobileMenuOpen(false)}>Home</a>
-            <a href="#restaurants" className="mobile-nav-link" onClick={() => setMobileMenuOpen(false)}>For Restaurants</a>
-            <a href="#customers" className="mobile-nav-link" onClick={() => setMobileMenuOpen(false)}>For Customers</a>
-            <a href="#how-it-works" className="mobile-nav-link" onClick={() => setMobileMenuOpen(false)}>How It Works</a>
-            <a href="#features" className="mobile-nav-link" onClick={() => setMobileMenuOpen(false)}>Features</a>
-            <a href="#faq" className="mobile-nav-link" onClick={() => setMobileMenuOpen(false)}>FAQ</a>
-            <a href="#demo" className="btn btn-primary" style={{ width: '100%', marginTop: '0.75rem', minHeight: '48px' }} onClick={() => setMobileMenuOpen(false)}>Request Demo</a>
-          </div>
-        )}
-      </header>
+      <Header currentPath={currentPath} onNavigate={navigate} />
 
       {/* 2. HERO SECTION WITH COMPOSITE PRODUCT VISUAL */}
       <section id="home" className="hero">
@@ -753,54 +793,7 @@ function App() {
       </section>
 
       {/* 12. FOOTER */}
-      <footer className="footer">
-        <div className="container">
-          <div className="footer-grid">
-            <div>
-              <div className="footer-logo">
-                <Store style={{ display: 'inline', marginRight: '0.5rem', color: 'var(--purple)' }} />
-                Restro<span>Connect</span>
-              </div>
-              <p className="footer-desc">Your Restaurant. Your Customers. Your Orders.</p>
-              <div style={{ fontSize: '0.85rem', color: 'var(--gray-400)' }}>
-                Restaurant management & direct ordering platform.
-              </div>
-            </div>
-
-            <div>
-              <h4 className="footer-heading">Product</h4>
-              <ul className="footer-links">
-                <li><a href="#restaurants">For Restaurants</a></li>
-                <li><a href="#customers">For Customers</a></li>
-                <li><a href="#features">Features & POS</a></li>
-                <li><a href="#how-it-works">How It Works</a></li>
-              </ul>
-            </div>
-
-            <div>
-              <h4 className="footer-heading">Company</h4>
-              <ul className="footer-links">
-                <li><a href="#demo">Request Demo</a></li>
-                <li><a href="#faq">FAQ</a></li>
-              </ul>
-            </div>
-
-            <div>
-              <h4 className="footer-heading">Legal & Contact</h4>
-              <ul className="footer-links">
-                <li><a href="#">Privacy Policy</a></li>
-                <li><a href="#">Terms & Conditions</a></li>
-                <li><a href="#">Contact Support</a></li>
-              </ul>
-            </div>
-          </div>
-
-          <div className="footer-bottom">
-            <div>&copy; {new Date().getFullYear()} RestroConnect Technology. All rights reserved.</div>
-            <div>Built for restaurants in India and worldwide.</div>
-          </div>
-        </div>
-      </footer>
+      <Footer currentPath={currentPath} onNavigate={navigate} />
     </div>
   );
 }
